@@ -45,4 +45,13 @@ public class EmployeeRepositoryTest {
         Employee foundEmployee = repository.findById(savedEmployee.getId());
         assertEquals(employee, foundEmployee);
     }
+
+    @Test
+    public void testUpdateEmployee() {
+        Employee employee = new Employee("John", "Doe", LocalDate.of(1999, 9, 9));
+        Employee savedEmployee = repository.save(employee);
+        employee.setLastName("Dijkstra");
+        Employee updatedEmployee = repository.update(employee);
+        assertEquals(employee, updatedEmployee);
+    }
 }
