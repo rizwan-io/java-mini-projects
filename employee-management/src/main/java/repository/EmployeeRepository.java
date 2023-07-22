@@ -9,6 +9,7 @@ public class EmployeeRepository {
     public static final String INSERT_EMPLOYEE_SQL = "INSERT INTO employee(first_name, last_name, date_of_birth) VALUES(?, ?, ?)";
     public static final String FIND_BY_ID_SQL = "SELECT * FROM employee WHERE employee_id = ?";
     public static final String UPDATE_EMPLOYEE_SQL = "UPDATE employee SET first_name = ?, last_name = ?, date_of_birth = ?";
+    public static final String DELETE_ONE_SQL = "DELETE FROM employee WHERE employee_id = ?";
     private final Connection connection;
     public EmployeeRepository(Connection connection) {
         this.connection = connection;
@@ -78,5 +79,16 @@ public class EmployeeRepository {
             throw new RuntimeException(e);
         }
         return updatedEmployee;
+    }
+
+    public void delete(Employee employee) {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(DELETE_ONE_SQL);
+            preparedStatement.setLong(1, employee.getId());
+            int rowsAffected = preparedStatement.executeUpdate();
+            System.out.println("Rows affected: " + rowsAffected);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

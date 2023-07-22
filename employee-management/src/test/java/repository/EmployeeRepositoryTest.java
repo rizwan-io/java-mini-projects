@@ -54,4 +54,11 @@ public class EmployeeRepositoryTest {
         Employee updatedEmployee = repository.update(employee);
         assertEquals(employee, updatedEmployee);
     }
+
+    @Test
+    public void deleteOneEmployee() {
+        Employee employee = new Employee("John", "Doe", LocalDate.of(1999, 9, 9));
+        Employee savedEmployee = repository.save(employee);
+        repository.delete(savedEmployee);
+    }
 }
