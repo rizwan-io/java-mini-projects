@@ -3,9 +3,11 @@ package repository;
 import model.Employee;
 
 import java.sql.*;
+import java.time.LocalDate;
 
 public class EmployeeRepository {
     public static final String INSERT_EMPLOYEE_SQL = "INSERT INTO employee(first_name, last_name, date_of_birth) VALUES(?, ?, ?)";
+    public static final String FIND_BY_ID_SQL = "SELECT * FROM employee WHERE employee_id = ?";
     private final Connection connection;
     public EmployeeRepository(Connection connection) {
         this.connection = connection;
@@ -23,6 +25,7 @@ public class EmployeeRepository {
             int rowsAffected = preparedStatement.executeUpdate();
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
             while (resultSet.next()) {
+                savedEmployee.setId(resultSet.getLong("employee_id"));
                 savedEmployee.setFirstName(resultSet.getString("first_name"));
                 savedEmployee.setLastName(resultSet.getString("last_name"));
                 savedEmployee.setDateOfBirth(resultSet.getDate("date_of_birth").toLocalDate());
@@ -32,5 +35,25 @@ public class EmployeeRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Employee findById(Long id) {
+        Employee employee = null;
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL);
+            preparedStatement.setLong(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                long employeeId = resultSet.getLong("employee_id");
+                String firstName = resultSet.getString("first_name");
+                String lastName = resultSet.getString("last_name");
+                LocalDate dateOfBirth = resultSet.getDate("date_of_birth").toLocalDate();
+                employee = new Employee(employeeId, firstName, lastName, dateOfBirth);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return employee;
     }
 }

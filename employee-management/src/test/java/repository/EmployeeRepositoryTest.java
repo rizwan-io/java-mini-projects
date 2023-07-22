@@ -32,9 +32,17 @@ public class EmployeeRepositoryTest {
     }
 
     @Test
-    public void testSaveOneEmployee() throws SQLException {
+    public void testSaveOneEmployee() {
         Employee employee = new Employee("John", "Doe", LocalDate.of(1999, 9, 9));
         Employee savedEmployee = repository.save(employee);
         assertEquals(employee, savedEmployee);
+    }
+
+    @Test
+    public void testFindEmployeeById() {
+        Employee employee = new Employee("John", "Doe", LocalDate.of(1999, 9, 9));
+        Employee savedEmployee = repository.save(employee);
+        Employee foundEmployee = repository.findById(savedEmployee.getId());
+        assertEquals(employee, foundEmployee);
     }
 }
